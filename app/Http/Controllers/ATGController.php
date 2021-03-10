@@ -36,19 +36,28 @@ class ATGController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
+        try{
+            $request->validate([
             'name'=>['required','unique:web_lara1s'],
             'email'=>['required','unique:web_lara1s','regex:/(^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,15}$)/u'],
             'pincode'=>['required','regex:/(^[1-9]{1}[0-9]{2}\s{0,1}[0-9]{3}$)/u']
 
-        ]);
-        $res=new web_lara1;
-        $res->name=$request->name;
-        $res->email=$request->email;
-        $res->pincode=$request->pincode;
-        $res->save();
-        Session::flash('success','you have been registred successfully');
-        return back();
+            ]);
+            $res=new web_lara1;
+            $res->name=$request->name;
+            $res->email=$request->email;
+            $res->pincode=$request->pincode;
+            $res->save();
+            $ghj=[$request->name,$request->email,$request->pincode];
+            $request->session()->put('LoggedUser',$ghj);
+            return redirect('dash');
+
+
+        }catch(Exception $e){
+            
+            return back();
+
+        }
     }
 
     /**

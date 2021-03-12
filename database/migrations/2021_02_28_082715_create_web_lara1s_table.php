@@ -14,7 +14,7 @@ class CreateWebLara1sTable extends Migration
     public function up()
     {
         Schema::create('web_lara1s', function (Blueprint $table) {
-            $table->string('name');
+            $table->string('name')->primary();
             $table->string('email');
             $table->string('pincode');
             $table->timestamps();

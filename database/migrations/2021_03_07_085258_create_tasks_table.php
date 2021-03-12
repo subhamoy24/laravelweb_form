@@ -20,6 +20,10 @@ class CreateTasksTable extends Migration
             $table->string('status')->default('pending');
             $table->timestamps();
         });
+        Schema::table('tasks', function (Blueprint $table) {
+            $table->foreign('user_id')->references('name')->on('web_lara1s')->onDelete('cascade');
+           
+        });
     }
 
     /**

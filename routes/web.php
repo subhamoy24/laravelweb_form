@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\User;
 use App\Http\Controllers\ATGController;
 use App\Http\Controllers\TaskController;
+use App\Http\Controllers\LoginController;
 use Illuminate\Http\Request;
 /*
 |--------------------------------------------------------------------------
@@ -21,11 +22,16 @@ Route::group(['middleware'=>['redi']] ,function(){
 	    return view('first');
     });
 });
+Route::post('user/login','App\Http\Controllers\LoginController@store');
+Route::get('login',function(){
+	return view('login');
+})->name('login');
 Route::group(['middleware'=>['AtgAuth']] ,function(){
 	Route::post('todo/add','App\Http\Controllers\TaskController@store');
     Route::post('todo/status','App\Http\Controllers\TaskController@update');
+	Route::post('mango','App\Http\Controllers\LoginController@show');
 });
-Route::post('user/dashboard','App\Http\Controllers\ATGController@store');
+Route::post('user/dashboard', 'App\Http\Controllers\ATGController@store');
 Route::get('logout', function () {
     if(session()->has('LoggedUser')){
     	session()->forget('LoggedUser');
@@ -37,7 +43,4 @@ Route::group(['middleware'=>['AuthCheck']] ,function(){
 	Route::get('dash',function(){
 	    return view('success');
     });
-});
-Route::get('token',function(){
-	   print_r(Uuid::generate()->string);
 });

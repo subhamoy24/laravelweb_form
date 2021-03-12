@@ -52,7 +52,6 @@ class ATGController extends Controller
             $request->session()->put('LoggedUser',$ghj);
             return redirect('dash');
 
-
         }catch(Exception $e){
             
             return back();

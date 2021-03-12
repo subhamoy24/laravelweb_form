@@ -77,11 +77,17 @@ class TaskController extends Controller
      * @param  \App\Models\Task  $task
      * @return \Illuminate\Http\Response
      */
-    public function show(Task $task)
+    public function show(Request $request)
     {
-        //
-    }
+        $p=Task::where('user_id',"=",$request->user_id);
+        if($p!=null){
+            $p=$p->toarray();
+            return response()->json(['status'=>1,'data'=>$p]);
+        }else{
+            return response()->json(['status'=>0,'data'=>'error']);
+        }
 
+    }
     /**
      * Show the form for editing the specified resource.
      *

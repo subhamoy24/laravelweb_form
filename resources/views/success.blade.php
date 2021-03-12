@@ -13,17 +13,59 @@
         <link rel="stylesheet" type="text/css" href="{{asset('css/message.css')}}">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
         <script>
-            function yui(){
-              document.getElementById('oi').innerHTML="";
-              document.getElementById('tii').innerHTML="";
+            function hui(){
+              var myHeaders = new Headers();
+                myHeaders.append("Content-Type", "application/json");
+                var p1=document.getElementById('kp').innerHTML;
+                var p1=p1.substr(6)
+                var raw = JSON.stringify({"Authentication":"helloatg","user_id":p1})
+                var requestOptions = {
+                method: 'POST',
+                headers: myHeaders,
+                body: raw,
+                redirect: 'follow'
+                };
+                console.log("pii");
+                fetch("http://127.0.0.1:8000/mango", requestOptions)
+                .then(response => response.json()).then(
+                  data=>{
+                    console.log(data)
+                    if (data.status==1){
+                    var p= data.data;
+                    var m='<table class="table"><thead>';
+                    m+='<tr><td>Task Id</td><td>Task</td><td>status</td></tr></thead>'
+                    m+='<tbody>'
+                    for(var i=0;i<p.length;i++){
+                      m+="<tr>"
+                      m+="<td>"+p[i].id+"</td>"
+                      m+="<td>"+p[i].task+"</td>"
+                      m+="<td>"+p[i].status+"</td>"
+                      m+="</tr>"
+                    }
+                    m+='</tbody></table>'
+                    document.getElementById('pu').innerHTML=m;
+                  }else{
+                    document.getElementById('pu').innerHTML="no task yet";
+
+                  }
+                }).catch(error=>{
+                      console.log(error);
+                });
+            }
+            function fun(){
+                document.getElementById('oi').innerHTML="";
+                document.getElementById('tii').innerHTML="";
+                hui();
+                
             }
             function onClick1(){
-             
+
               var preloader=document.getElementById('fp-loader');
               preloader.style.display='block';
               var myHeaders = new Headers();
               myHeaders.append("Content-Type", "application/json");
-              var p1=document.getElementById("us").value
+              var p1=document.getElementById('kp').innerHTML;
+              var p1=p1.substr(6)
               var p2=document.getElementById("ta").value
               var p3=document.getElementById("auth").value
               var raw = JSON.stringify({"Authentication":p3,"user_id":p1,"task":p2})
@@ -36,13 +78,15 @@
               fetch("http://127.0.0.1:8000/todo/add", requestOptions)
                 .then(response => response.json())
                 .then(data=>{
-                 var p="";
+                  hui();
+                  var p="";
                   if(data.status==0){
                   preloader.style.display='none';
                   for(var i=0;i<data.message.length;i++){
                     p+='<div class="alert alert-danger" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="fa fa-exclamation-circle"></i></strong><span class="po">'+data.message[0]+'</span></div>';
                   } 
                   document.getElementById('oi').innerHTML=`${p}`;
+                  
                 }else{
                   preloader.style.display='none';
                   p+='<div class="alert alert-success" role="alert"><button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><strong><i class="fa fa-check"></i></strong><span class="po">'+data.message+'</span></div>'
@@ -69,17 +113,15 @@
               var raw = JSON.stringify({"Authentication":p2,"task_id":p1,"status":p3});
               var requestOptions = {
                 method: 'POST',
-                headers: {
-                  "Content-Type":"application/json",
-                  'Access-Control-Allow-Origin':'*'
-                },
+                headers: myHeaders,
                 //mode:'no-cors',
                 body: raw,
                 redirect: 'follow'
               };
               fetch("http://127.0.0.1:8000/todo/status", requestOptions)
-                .then(response => response.json())
-                .then(function(data){
+              .then(response => response.json())
+              .then(data=>{
+                hui()
                 var p=""
                 console.log(data);
                 //var p=data.predicted_crop
@@ -94,14 +136,12 @@
                   document.getElementById('oi').innerHTML=`${p}`;
 
                 }
-                })
-                .catch(function(error){
-                  console.log(data);
+              }).catch(error=>{
+                  console.log(error);
                   preloader.style.display='none';
                 });
 
             }
-        
         </script>
 
         <style>
@@ -109,11 +149,15 @@
            overflow: visible;
             border-radius: 9px;
         }
-        .row{
+        #po1{
           background-color: orange;
           border: 2px solid brown;
         }
-          #po1 .col-md-3{
+        #po{
+          background-color: orange;
+          border: 2px solid brown;
+        }
+          #po1 .col-md-4{
             padding-left:180px;
             margin-block: 20px;
           }
@@ -144,10 +188,32 @@
 
             }
           }
-
+          table
+          {
+            border-collapse: collapse;
+            display: block;
+          }
+          thead
+          {
+            display: block;
+          }
+          tbody
+          {
+            display: block;
+          }
+          tr
+          {
+            display: flex;
+          }
+          td
+          {
+           flex: 1;
+           padding: 5px 10px 20px 5px;
+           border: 1px solid black;
+          }
           </style>
     </head>
- <body onload=yui()>
+ <body onload=fun()>
     <nav>
       <input type="checkbox" id="check">
       <label for="check" class="checkbtn">
@@ -158,31 +224,37 @@
         <li><i style="font-size: 30px" class='fa fa-user-circle'></i><span>{{session('LoggedUser')[0]}}</span></li>
       </ul>
     </nav>
+    <div class="row">
+    <div class="col-md-6">
     <div class="tui">
       <div class="tui1" >Hello {{session('LoggedUser')[0]}} </div>
-      <div class="tui1">Name: {{session('LoggedUser')[0]}}</div>
+      <div class="tui1" id="kp">Name: {{session('LoggedUser')[0]}}</div>
       <div class="tui1">Email: {{session('LoggedUser')[1]}}</div>
       <div class="tui1">Pincode: {{session('LoggedUser')[2]}}</div>
     </div>
+    </div>
+    <div class="col-md-6" id="pu">
+
+    </div>
+    </div>
+
     <div id="oi"></div>
     <div id="tii"></div>
+    <h3>add a task</h3>
     <div class="row" id="po1">
-    <div class="col-md-3" >
-     <div>user id</div>
-    <input name="user_id" id="us" palaceholder="enter user id"/>
-    </div>
-    <div  class="col-md-3">
+    <div  class="col-md-4">
     <div>task</div>
     <input name="task" id="ta" palaceholder="enter   task"/>
     </div>
-    <div  class="col-md-3">
+    <div  class="col-md-4">
     <div>api key</div>
     <input name="Authenticatin" id="auth" palaceholder="enter api key"/>
     </div>
-    <div  class="col-md-3">
-    <button onclick=onClick1() type="button" class="btn btn-info">submit</button>
+    <div  class="col-md-4">
+    <button onclick=onClick1() type="button" class="btn btn-info">add</button>
     </div>
     </div>
+    <h3>update a task</h3>
     <div class="row" id="po">
     <div class="col-md-3">
     <div>task id</div>
@@ -197,7 +269,7 @@
     <input  name="Authenticatin" id="au" palaceholder="enter api key"/>
     </div>
     <div  class="col-md-3">
-    <button onclick=onClick2() type="button" class="btn btn-info">submit</button>
+    <button onclick=onClick2() type="button" class="btn btn-info">update</button>
     </div>
      </div>
 

@@ -15,14 +15,12 @@
     </head>
     <body>
     	@include('message')
-    	<form class="login" action="user/dashboard" method="Post">
+    	<form class="login" action="user/login" method="Post">
 		@csrf
 		<h1>Enter your details</h1>
 		<input type="name" name="name" class="login-input" placeholder="name" autofocus>
-		<input type="text" name="email" class="login-input" placeholder="email">
-		<input type="pincode" name="pincode" class="login-input" placeholder="pincode">
 		<input type="submit" value="submit" class="login-submit">
 	    </form>
-        <td>if you have already been logged in<a href="{{route('login')}}">login</a></td>
+
 	</body>
 </html>
